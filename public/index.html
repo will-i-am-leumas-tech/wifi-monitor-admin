@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WiFi Traffic Monitor MVP</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">◌ WiFi Traffic Monitor</div>
+      <nav class="tabs">
+        <button class="tab is-active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="inspect">Inspect</button>
+        <button class="tab" data-tab="notifications">Notifications</button>
+      </nav>
+      <div class="status-pill" id="connection-status">Connecting…</div>
+    </header>
+
+    <main class="content">
+      <section id="view-overview" class="view is-active">
+        <div class="grid overview-grid">
+          <article class="card side-stats">
+            <h3>Adapter</h3>
+            <div id="adapter-name" class="metric big">unknown</div>
+            <div class="label-row">
+              <span>Representation</span>
+              <div class="toggle-group">
+                <button class="mode-btn is-active" data-mode="bytes">bytes</button>
+                <button class="mode-btn" data-mode="bits">bits</button>
+                <button class="mode-btn" data-mode="packets">packets</button>
+              </div>
+            </div>
+            <canvas id="donutChart" width="260" height="180"></canvas>
+            <div class="totals-list">
+              <div><span>Incoming</span><strong id="incoming-current">0 B/s</strong><small id="incoming-total">Total: 0 B</small></div>
+              <div><span>Outgoing</span><strong id="outgoing-current">0 B/s</strong><small id="outgoing-total">Total: 0 B</small></div>
+              <div><span>Dropped</span><strong id="dropped-current">0 pkts/s</strong><small id="dropped-total">Total: 0 pkts</small></div>
+            </div>
+          </article>
+
+          <article class="card traffic-card">
+            <div class="card-header">
+              <h3>Traffic rate</h3>
+              <div id="active-filters" class="chips"></div>
+            </div>
+            <canvas id="trafficChart" width="900" height="280"></canvas>
+          </article>
+
+          <article class="card list-card">
+            <h3>Network hosts</h3>
+            <div id="top-hosts" class="list-panel"></div>
+          </article>
+
+          <article class="card list-card">
+            <h3>Services</h3>
+            <div id="top-services" class="list-panel"></div>
+          </article>
+
+          <article class="card list-card">
+            <h3>Programs</h3>
+            <div id="top-programs" class="list-panel"></div>
+          </article>
+
+          <article class="card list-card">
+            <h3>Regions</h3>
+            <div id="top-countries" class="list-panel"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-inspect" class="view">
+        <article class="card">
+          <div class="filters-row">
+            <input id="filter-host" placeholder="Host" />
+            <input id="filter-program" placeholder="Program" />
+            <input id="filter-service" placeholder="Service" />
+            <input id="filter-country" placeholder="Region" />
+            <select id="filter-protocol">
+              <option value="">All protocols</option>
+              <option value="tcp">TCP</option>
+              <option value="udp">UDP</option>
+            </select>
+            <button id="apply-filters">Apply</button>
+            <button id="clear-filters" class="ghost">Clear</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>S Port</th>
+                  <th>Destination</th>
+                  <th>D Port</th>
+                  <th>Protocol</th>
+                  <th>Service</th>
+                  <th>Program</th>
+                  <th>Region</th>
+                  <th>Bytes</th>
+                </tr>
+              </thead>
+              <tbody id="inspect-body"></tbody>
+            </table>
+          </div>
+          <div id="inspect-meta" class="footer-note"></div>
+        </article>
+      </section>
+
+      <section id="view-notifications" class="view">
+        <article class="card">
+          <div class="card-header">
+            <h3>Notifications</h3>
+            <button id="clear-notifications" class="ghost">Clear</button>
+          </div>
+          <div id="notifications-list" class="notifications"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer-bar">
+      <span>Server port 29183</span>
+      <span id="footer-adapter">Adapter: unknown</span>
+      <span id="footer-updated">Updated: --</span>
+    </footer>
+  </div>
+
+  <script src="/state.js"></script>
+  <script src="/api.js"></script>
+  <script src="/charts.js"></script>
+  <script src="/render-overview.js"></script>
+  <script src="/render-inspect.js"></script>
+  <script src="/render-notifications.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

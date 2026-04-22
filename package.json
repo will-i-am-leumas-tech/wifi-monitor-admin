@@ -1,0 +1,25 @@
+{
+  "name": "wifi-traffic-monitor",
+  "version": "0.1.0",
+  "description": "Simple open-source Node.js network traffic monitor MVP",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --test ./test/*.test.js"
+  },
+  "keywords": [
+    "network",
+    "traffic",
+    "monitor",
+    "wifi",
+    "dashboard"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "systeminformation": "^5.27.7",
+    "ws": "^8.20.0"
+  }
+}
