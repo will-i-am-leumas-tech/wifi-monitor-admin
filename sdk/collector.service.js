@@ -3,6 +3,7 @@ const { createTrafficEvent } = require('./models');
 const store = require('./store');
 const { listAdapters, getPrimaryAdapter, getProcNetworkStats } = require('./adapter.service');
 const { collectConnections } = require('./connection.service');
+const { collectDevices } = require('./device.service');
 const { enrichConnection, resolveEnrichments } = require('./enrich.service');
 const { getProcessMap, resolveProcessName } = require('./process.service');
 const { toOverviewPayload, toInspectRow, toNotificationPayload } = require('./transform.service');
@@ -120,10 +121,12 @@ async function collectTick() {
   const event = await collectAdapterStats(adapter).catch(() => createTrafficEvent({ adapter }));
   store.addTrafficPoint(event);
 
-  const [rawConnections, processMap] = await Promise.all([
+  const [rawConnections, processMap, devices] = await Promise.all([
     withTimeout(collectConnections(), 750, []),
-    withTimeout(getProcessMap(), 500, new Map())
+    withTimeout(getProcessMap(), 500, new Map()),
+    withTimeout(collectDevices(), 900, store.getState().devices || [])
   ]);
+  store.setDevices(devices);
   const trafficConnections = rawConnections.filter(isTrafficConnection);
   const rows = [];
   const totalConnectionRate = Number(event.rxBytesPerSec || 0) + Number(event.txBytesPerSec || 0);

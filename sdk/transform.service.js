@@ -40,6 +40,7 @@ function toOverviewPayload(store) {
     topServices: buildTopServices(rows),
     topPrograms: buildTopPrograms(rows),
     topCountries: buildTopCountries(rows),
+    devices: store.devices || [],
     settings: store.settings,
     adapters: store.adapters || []
   };

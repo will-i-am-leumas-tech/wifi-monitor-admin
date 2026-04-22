@@ -12,6 +12,10 @@ window.Api = {
     const res = await fetch('/api/notifications');
     return res.json();
   },
+  async getDevices(refresh = false) {
+    const res = await fetch(`/api/devices${refresh ? '?refresh=1' : ''}`);
+    return res.json();
+  },
   async clearNotifications() {
     const res = await fetch('/api/notifications/read-all', { method: 'POST' });
     return res.json();

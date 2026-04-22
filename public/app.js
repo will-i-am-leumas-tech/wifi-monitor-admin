@@ -84,6 +84,11 @@
       window.AppState.notifications = [];
       requestRender();
     });
+    document.getElementById('refresh-devices').addEventListener('click', async () => {
+      const payload = await window.Api.getDevices(true);
+      window.AppState.overview = { ...(window.AppState.overview || {}), devices: payload.devices || [] };
+      requestRender();
+    });
   }
 
   function wireStream() {
@@ -113,4 +118,3 @@
     wireStream();
   });
 })();
-

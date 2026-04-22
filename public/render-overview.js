@@ -107,6 +107,61 @@
     container.appendChild(fragment);
   }
 
+  function deviceIcon(type) {
+    const clean = String(type || '').toLowerCase();
+    if (clean === 'router') return 'R';
+    if (clean === 'phone') return 'P';
+    if (clean === 'tablet') return 'T';
+    if (clean === 'computer') return 'C';
+    if (clean === 'media') return 'M';
+    if (clean === 'printer') return 'Pr';
+    if (clean === 'smart device') return 'S';
+    return 'N';
+  }
+
+  function renderDevices(devices) {
+    const container = document.getElementById('connected-devices');
+    const summary = document.getElementById('devices-summary');
+    if (!container) return;
+    const data = Array.isArray(devices) ? devices : [];
+    const dataKey = JSON.stringify(data);
+    if (lastRendered['connected-devices'] === dataKey) return;
+    lastRendered['connected-devices'] = dataKey;
+
+    if (summary) {
+      const routerCount = data.filter((item) => item.isRouter).length;
+      summary.textContent = `${data.length} device${data.length === 1 ? '' : 's'} found${routerCount ? ` · ${routerCount} router` : ''}`;
+    }
+
+    if (!data.length) {
+      container.innerHTML = '<div class="footer-note">No network devices discovered yet.</div>';
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    data.forEach((device) => {
+      const row = document.createElement('div');
+      row.className = 'device-row';
+      const label = device.hostname || device.ip || 'Unknown device';
+      const meta = [device.ip, device.mac, device.interface].filter(Boolean).join(' · ');
+      row.innerHTML = `
+        <div class="device-icon" title="${escapeHtml(device.type || 'Network device')}">${escapeHtml(deviceIcon(device.type))}</div>
+        <div class="device-main">
+          <div class="device-title">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(device.type || 'Network device')}</strong>
+          </div>
+          <div class="device-meta">${escapeHtml(meta || 'No address details')}</div>
+        </div>
+        <span class="device-state">${escapeHtml(device.state || 'unknown')}</span>
+      `;
+      fragment.appendChild(row);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(fragment);
+  }
+
   function renderOverview(data) {
     if (!data) return;
     const mode = window.AppState.representation || 'bytes';
@@ -159,6 +214,7 @@
     }
 
     renderList('top-hosts', data.topHosts, mode, 'host');
+    renderDevices(data.devices || []);
     renderList('top-services', data.topServices, mode, 'service');
     renderList('top-programs', data.topPrograms, mode, 'program');
     renderList('top-countries', (data.topCountries || []).map(c => ({ ...c, name: c.name || 'Local/Unknown' })), mode, 'country');
@@ -166,4 +222,3 @@
 
   window.RenderOverview = renderOverview;
 })();
-

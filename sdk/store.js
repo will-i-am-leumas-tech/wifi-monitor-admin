@@ -6,6 +6,7 @@ const state = {
   latestOverviewEvent: null,
   trafficHistory: [],
   inspectRows: [],
+  devices: [],
   notifications: [],
   settings: { ...DEFAULT_SETTINGS },
   activeFilters: {}
@@ -33,6 +34,10 @@ function setInspectRows(rows) {
   state.inspectRows = Array.isArray(rows) ? rows.slice(0, MAX_INSPECT_ROWS) : [];
 }
 
+function setDevices(devices) {
+  state.devices = Array.isArray(devices) ? devices : [];
+}
+
 function addNotification(item) {
   state.notifications.unshift(item);
   if (state.notifications.length > MAX_NOTIFICATIONS) {
@@ -54,6 +59,7 @@ module.exports = {
   setPrimaryAdapter,
   addTrafficPoint,
   setInspectRows,
+  setDevices,
   addNotification,
   setSettings,
   getState
